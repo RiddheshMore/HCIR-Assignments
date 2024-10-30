@@ -1,6 +1,7 @@
 from collections import Counter
+import time
 from qibullet import SimulationManager, PepperVirtual
-import gtts
+from gtts import gTTS
 from playsound import playsound
 import threading
 import os
@@ -12,29 +13,37 @@ class BehaviorRealizer:
         simulation_manager = SimulationManager()
         client = simulation_manager.launchSimulation(gui=True)
         self.pepper = simulation_manager.spawnPepper(client, spawn_ground_plane=True)
+        self.pepper.goToPosture("Crouch", 0.6) 
+        time.sleep(1)
+        self.pepper.goToPosture("StandInit", 0.6) 
+        time.sleep(1)
 
     def speak(self, text):
         """
         This method makes Pepper speak a given text.
         It uses gtts (Google Text-to-Speech) to generate audio and plays it.
         """
-        tts = gtts.gTTS(text)
-        tts.save("speech.mp3")
-        playsound("speech.mp3")
-        os.remove("speech.mp3")  # Clean up the file after playing
+        # Delay before starting to speak (6 seconds as specified)
+        time.sleep(6)
+    
+        # Generate spoken message and play it
+        tts = gTTS("Hello, welcome to Masters of Autonomous Systems")
+        tts.save("message.mp3")
+        playsound("message.mp3")
 
     def wave(self):
         """
         This method makes Pepper wave its hand.
         It controls the arm joints to simulate a waving gesture.
         """
-        # Set the arm to initial pose before waving
-        self.pepper.setAngles(["LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll"], 
-                              [1.0, 0.3, -1.0, -0.5], 0.5)
         # Simulate the wave by moving the elbow
-        for _ in range(3):  # Repeat the wave 3 times
-            self.pepper.setAngles("LElbowRoll", 0.5, 0.8)  # Move elbow up
-            self.pepper.setAngles("LElbowRoll", -0.5, 0.8)  # Move elbow down
+        for _ in range(5):  # Loop to wave 5 times
+            self.pepper.setAngles("RShoulderPitch",-0.5,0.5) #
+            self.pepper.setAngles("RShoulderRoll",-1.5620, 0.5) 
+            self.pepper.setAngles("RElbowRoll",1.5620,0.5)
+            time.sleep(1.0) 
+            self.pepper.setAngles("RElbowRoll",-1.5620,0.5)
+            time.sleep(1.0)
     
     def realize_behavior(self, behavior, text=None):
         """
