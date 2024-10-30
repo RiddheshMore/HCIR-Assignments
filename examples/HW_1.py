@@ -1,7 +1,7 @@
 from collections import Counter
 import time
 from qibullet import SimulationManager, PepperVirtual
-from gtts import gTTS
+import gtts
 from playsound import playsound
 import threading
 import os
@@ -23,13 +23,9 @@ class BehaviorRealizer:
         This method makes Pepper speak a given text.
         It uses gtts (Google Text-to-Speech) to generate audio and plays it.
         """
-        # Delay before starting to speak (6 seconds as specified)
-        time.sleep(6)
-    
-        # Generate spoken message and play it
-        tts = gTTS("Hello, welcome to Masters of Autonomous Systems")
-        tts.save("message.mp3")
-        playsound("message.mp3")
+        tts = gtts.gTTS(text)
+        tts.save("speech.mp3")
+        playsound("speech.mp3")
 
     def wave(self):
         """
@@ -38,7 +34,7 @@ class BehaviorRealizer:
         """
         # Simulate the wave by moving the elbow
         for _ in range(5):  # Loop to wave 5 times
-            self.pepper.setAngles("RShoulderPitch",-0.5,0.5) #
+            self.pepper.setAngles("RShoulderPitch",-0.5,0.5) 
             self.pepper.setAngles("RShoulderRoll",-1.5620, 0.5) 
             self.pepper.setAngles("RElbowRoll",1.5620,0.5)
             time.sleep(1.0) 
